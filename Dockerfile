@@ -1,20 +1,30 @@
-# Utilise une image officielle de Node.js
-FROM node:18
-  
-# Définit le répertoire de travail
+# Utilisation d'une image Node.js officielle (adapter si nécessaire)
+FROM node:18 AS build
+
+# Définition du répertoire de travail dans le conteneur
 WORKDIR /app
-  
- # Copie les fichiers de l’app
+
+# Copie des fichiers package.json et package-lock.json
 COPY package*.json ./
+
+# Installation des dépendances
 RUN npm install
+
+# Copie du reste du projet
 COPY . .
-  
-  # Build de l'application
+
 RUN npm run build
-  
-  # Exposition du port
-EXPOSE 3000
-  
-  # Utilise un serveur statique pour servir l'app (par exemple serve)
+
+FROM node:18
+
 RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "3000"]
+
+WORKDIR /app
+
+COPY --from=build /app/build .
+
+# Exposition du port utilisé par l'application (ex: 3000)
+EXPOSE 3000
+
+# Commande de démarrage de l'application
+CMD ["serve", "-s", ".", "-l", "3000"]
