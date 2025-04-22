@@ -13,8 +13,8 @@ COPY . .
 RUN npm run build
   
   # Exposition du port
-EXPOSE 5000
+EXPOSE 3000
   
   # Utilise un serveur statique pour servir l'app (par exemple serve)
 RUN npm install -g serve
-CMD ["serve", "-s", "build", "-l", "5000"]
+CMD ["serve", "-s", "build", "-l", "3000"]
